@@ -1,46 +1,45 @@
 require_relative 'players'
 require_relative 'questions'
-player1 =  Player.new('Player 1')
-player2 = Player.new('Player 2')
+Player1 =  Player.new('Player 1')
+Player2 = Player.new('Player 2')
 
-@players = [player1, player2]
+@players = [Player1, Player2]
 
 @current_player_num = 0
 
-def turn
+def change_player
   @current_player_num = ( @current_player_num + 1 ) % (2)
   @current_player = @players[@current_player_num]
 end
 
-while @players[0].lives != 0 && @players[1].lives != 0
-  a = Question.new
-  puts "#{@players[@current_player_num].name}: #{a.question}"
+def turn(current_player)
+  q = Question.new
+  puts "#{current_player.name}: #{q.question}"
+
   print "> "
-  p1_input = gets.chomp
+  input = gets.chomp
 
-  if p1_input.to_i == a.answer
-    puts "#{@players[@current_player_num].name}: YES! You are correct."
-    puts "P1: #{@players[0].lives}/3 vs P2: #{@players[1].lives}/3"
-    puts "----- NEW TURN -----"
-  else 
-    puts "#{@players[@current_player_num].name}: Seriously? No!"
-    @players[@current_player_num].lose_life
-    puts "P1: #{@players[0].lives}/3 vs P2: #{@players[1].lives}/3"
-    puts "----- NEW TURN -----"
+  if input.to_i == q.answer
+    puts "#{current_player.name}: YES! You are correct."
+  else
+    puts "#{current_player.name}: NO! You are incorrect."
+    current_player.lose_life
   end
-  
-  turn
-end 
+end
 
-if @players[0].lives == 0 || @players[1].lives == 0
-  if @players[0].lives != 0 
-    puts "#{@players[0].name} wins with a score of #{@players[0].lives}/3"
-    puts "----- GAME OVER -----"
-    puts "Good bye!"
+loop do
+  if Player1.game_over
+    puts "Player 2 wins with a score of #{Player2.lives}/3 \n----- GAME OVER ----- \nGood Bye!"
+    break
   end
-  if @players[1].lives != 0 
-    puts "#{@players[1].name} wins with a score of #{@players[1].lives}/3"
-    puts "----- GAME OVER -----"
-    puts "Good bye!"
+
+  if Player2.game_over
+    puts "Player 1 wins with a score of #{Player1.lives}/3 \n----- GAME OVER ----- \nGood Bye!"
+    break
   end
+
+  turn(@players[@current_player_num])
+  puts "P1: #{Player1.lives}/3 vs P2: #{Player2.lives}/3"
+  puts "----- NEW TURN -----"
+  change_player
 end

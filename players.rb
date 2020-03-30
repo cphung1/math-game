@@ -7,8 +7,11 @@ class Player
   end
 
   def lose_life 
-    @lives = lives - 1
+    @lives -= 1
   end
 
+  def game_over
+    @lives == 0 
+  end
 end
 
